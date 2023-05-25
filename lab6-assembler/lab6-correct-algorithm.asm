@@ -13,8 +13,8 @@ main:
     # Initialize the sieve array
     li $t1, 0               # Counter
     li $t2, 0               # Current number
-    li $t3, 2               # Start from 2 (first prime number)
-    li $t4, 100             # Size of the sieve array
+    li $t3, 0              # Start from 2 (first prime number)
+    li $t4, 20             # Size of the sieve array
     la $t5, sieve_array     # Address of the sieve array
 
     sieve_init_loop:
