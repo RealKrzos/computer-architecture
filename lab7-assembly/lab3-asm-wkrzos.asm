@@ -69,7 +69,9 @@ ask_for_action:
 
     j ask_for_action   # Jump back to the beginning to ask for action again
 
+#Read an adress value
 read:
+    # ask for row
     li $v0, 4
     la $a0, prompt4
     syscall
@@ -78,6 +80,7 @@ read:
     syscall
     move $t4, $v0    # Move the input value to $t4
 
+    # ask for column
     li $v0, 4
     la $a0, prompt5
     syscall
