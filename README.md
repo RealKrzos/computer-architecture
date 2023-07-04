@@ -1,3 +1,3 @@
 # CA
-Year 2022/23, Semester 2. Applied Informatics at WIST
+Year 2022/23, Semester 2. Applied Informatics at WUST
 
