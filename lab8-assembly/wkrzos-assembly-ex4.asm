@@ -27,7 +27,7 @@ main:
 
 	# przed skokiem do sum
 	# double check this one, could be 12
-	sub $sp, $sp, 8			# int s (4) + rezerwujemy meijsce na zmienne funkcji (8); 4 + 8 = 12
+	subiu $sp, $sp, 12			# int suma (4) + rezerwujemy meijsce na zmienne funkcji (8); 4 + 8 = 12
 	
 	la $t0, global_array		# peirwsza zmienna 
 	sw $t0, 4($sp)		 
@@ -41,25 +41,26 @@ main:
 	lw $t0, ($sp)		# wczytujemy wartość zwróconą w obliczeniach po skoku; $sp aktualnei na 12
 	sw $t0, 12($sp)		# w 12 na stacku zapisujemy wynik obliczeń; s = sum(global_array, 10)
 	
-	add $sp, $sp, 12		# $sp w tym miejscu wskazuje na 24, gdzie 20 było array address
+	addiu $sp, $sp, 12		# $sp w tym miejscu wskazuje na 24, gdzie 20 było array address
 	
 	lw $a0, ($sp)		# drukujemy wynik w konsoli
 	li $v0, 1		
 	syscall
-	
-	
+
 	# koniec podprogramu main:
+	addiu $sp, $sp, 4	# opróżniamy stack z suma (int s)
+
 	lw $sp, sys_stack_addr	 	# odtworzenie wskaźnika stosu
-					# systemowego
+							# systemowego
 	li $v0, 10
 	syscall
 	
 sum:
 
-	sub $sp, $sp, 8 		# adres do powrotu i wynik obliczeń; rezerwacja miejsca na stosie
+	subiu $sp, $sp, 8 		# adres do powrotu i wynik obliczeń; rezerwacja miejsca na stosie
 	sw $ra, ($sp) 		# odkładamy adres powrotu na stos (użyliśmy jal, więc w $ra
 				# znajduje się adres powrotu; zapisujemy w $sp)
-	sub $sp, $sp, 8		# rezerwacja miejsca na stosie dla int s, i
+	subiu $sp, $sp, 8		# rezerwacja miejsca na stosie dla int s, i
 	
 	# w tym miejscu odnieś się do ilustracji wizualizującej kolejność danych na stacku
 	
@@ -72,6 +73,9 @@ sum:
 	
 # while loop odpowiadający temu w wymaganiach;
 whileloop:
+
+	lw $t0, 4($sp)	# ta linia kodu nie jest potrzebna w założeniach assembly,
+				#  jednak jeżeli traktujemy ten obszar jako pamięć, należy ponownie to wczytać
 
 	bltz $t0, endwhileloop 	# while (i >= 0)
 	
@@ -86,8 +90,8 @@ whileloop:
 	
 	# obliczenia na s
 	lw $t1, ($sp)		# wczytujemy s
-	add $t1, $t1, $t0	# dosłowny kod z polecenia; s + array[i];
-	sw $t1, ($sp)		# dosłowny kod z polecenia; s = s + array[i];
+	add $t1, $t1, $t0	# dosłowny kod z polecenia; s + array[i]
+	sw $t1, ($sp)		# dosłowny kod z polecenia; s = s + array[i]
 	
 	# obliczenia na i
 	lw $t0, 4($sp)		# wczytujemy i
@@ -101,11 +105,11 @@ endwhileloop:
 	lw $t0, ($sp)		# wczytujemy wynik obliczeń s
 	sw $t0, 12($sp)		# zapisujemy zwracaną wartość w 12 (wynik) 
 	
-	add $sp, $sp, 8		# usuwamy niepotrzebne zmienne lokalne 
+	addiu $sp, $sp, 8		# usuwamy niepotrzebne zmienne lokalne 
 	
 	lw $ra, ($sp)		# wczytuje adres powrotny zapisany wcześniej 
 				# do $ra w celu wykonania skoku
 	
-	add $sp, $sp, 4		# przesuwamy stack pointer na wynik do zwrócenia
+	addiu $sp, $sp, 4		# przesuwamy stack pointer na wynik do zwrócenia
 	
 	jr $ra			# używająć wcześńiej zapisanego $ra, wracamy do main
